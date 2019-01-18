@@ -1,0 +1,162 @@
+
+<html>
+    <head>
+        <title>CANDiD 3.0</title>
+
+        <link rel="shortcut icon" type="image/png" href="/logo.png"/>
+        <meta name="theme-color" content="#1E88E5"/>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-red.min.css">
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+        <style media="screen">
+            .mdl-layout__content {
+                background: #eeeeee;
+            }
+            #message {
+                box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+                background:#ffffff;
+                margin-top:48px;
+                width:fit-content;
+                padding:24px;
+                padding-left:48px;
+                padding-right:48px;
+            }
+            @media (min-width: 600px) {
+                .mdl-layout__header-row {
+                    height: 82px;
+                }
+            }  
+            @media (max-width: 600px) {
+                .mdl-layout__content {
+                    background: #ffffff;
+                }
+                #message {
+                    box-shadow: none;
+                    margin-top: 0px;
+                    padding:12px;
+                    padding-left:12px;
+                    padding-right:12px;
+                }
+                h5 {
+                    font-size: 14px;
+                }
+            }
+        </style>
+    </head>
+
+    
+    <body>
+
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row" style="padding-left:40px;">                        
+                <span class="mdl-layout-spacer"></span>
+                <span class="mdl-layout-title">Doctor's Dashboard</span>
+                <span class="mdl-layout-spacer"></span>
+                </div>
+            </header>
+
+            <main class="mdl-layout__content">
+                <center>
+                    <div id="message">
+                        <form onsubmit="login(); return false;">
+                            <h5>Welcome</h5> 
+                            <div id="div-loginid" class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" type="text" id="loginid">
+                                <label class="mdl-textfield__label" for="loginid">Email...</label>
+                                <span id="errortype" class="mdl-textfield__error"></span>
+                            </div><br>  
+                            <div id="div-loginpassword" class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" type="password" id="loginpassword">
+                                <label class="mdl-textfield__label" for="loginpassword">Password</label>
+                                <span id="perrortype" class="mdl-textfield__error"></span>
+                            </div><br><br>
+                            <div id="loginbtn">
+                                <input type="submit" value="LOG IN" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                            </div>
+                            <div id="spin" class="hidden" style="min-height:36px;">
+                                <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                            </div>
+                        </form>        
+                    </div>
+                    <br>
+                    <center><a style="color:gray; text-decoration:none; font-family:monospace" href="mailto:pyoganathan99@gmail.com">
+                            Yoganathan - Vignesh - AVR</a></center>
+                </center>
+                </div>
+                
+            </main>
+        </div>    
+
+    </body>
+        
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCIUGogJEaNX_iEhhal4H9t9hbX_n-zDw4",
+            authDomain: "yogi-attendance.firebaseapp.com",
+            databaseURL: "https://yogi-attendance.firebaseio.com",
+            projectId: "yogi-attendance",
+            storageBucket: "",
+            messagingSenderId: "138075433005"
+        };
+        firebase.initializeApp(config);
+
+        function login(){
+            console.log('Attempt Login');
+            var email=document.getElementById('loginid').value;
+            var password=document.getElementById('loginpassword').value;
+
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+
+                document.getElementById('loginbtn').classList.remove('hidden');
+                document.getElementById('spin').classList.add('hidden');
+
+                if(errorCode=='auth/invalid-email') {
+                    document.getElementById('errortype').innerHTML="Invalid E-Mail ID"
+                    document.getElementById('div-loginid').classList.add('is-invalid');
+                    return;
+                }
+
+                if(errorCode=='auth/user-not-found') {
+                    document.getElementById('errortype').innerHTML="User not found"
+                    document.getElementById('div-loginid').classList.add('is-invalid');
+                    return;
+                }
+
+                if(errorCode=='auth/wrong-password') {
+                    document.getElementById('perrortype').innerHTML="Incorrect password"
+                    document.getElementById('div-loginpassword').classList.add('is-invalid');
+                    return;
+                }
+                
+                alert(errorMessage);
+            });
+
+            document.getElementById('spin').classList.remove('hidden');
+            document.getElementById('loginbtn').classList.add('hidden');
+        }
+
+        firebase.auth().onAuthStateChanged(function(user){
+            console.log('Logged in');
+            if(user){
+                //if(user.photoURL=="admin"){
+                    //window.location.href="display.html";
+                //} else {
+                    window.location.href="setperson.html";
+                //}
+            }
+        });
+
+    </script>
+</html>

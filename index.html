@@ -1,0 +1,409 @@
+<html>
+
+<head>
+
+    <title>
+        CANDiD 3.0
+    </title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBhcNrSqjHRsC9n9DThcHtHAac8EVmeiew",
+            authDomain: "candid-2-0.firebaseapp.com",
+            databaseURL: "https://candid-2-0.firebaseio.com",
+            projectId: "candid-2-0",
+            storageBucket: "candid-2-0.appspot.com",
+            messagingSenderId: "809387437907"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        .body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .mdl-switch {
+            margin: 6px;
+        }
+
+        .pulse {
+            display: block;
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            font-size: 28;
+            border-radius: 50%;
+            background: rgba(244, 67, 54, 0.0);
+            box-shadow: 0 0 0 rgba(244, 67, 54, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @-webkit-keyframes pulse {
+            0% {
+                -webkit-box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.6);
+            }
+            70% {
+                -webkit-box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+            }
+            100% {
+                -webkit-box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                -moz-box-shadow: 0 0 0 0 rgba(138, 59, 53, 0.6);
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.6);
+            }
+            70% {
+                -moz-box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+                box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+            }
+            100% {
+                -moz-box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+        <header class="mdl-layout__header">
+
+            <div class="mdl-layout__header-row">
+
+                <span class="mdl-layout-title">Doctor's Dashboard</span>
+                <div class="mdl-layout-spacer"></div>
+
+            </div>
+
+        </header>
+
+        <main class="mdl-layout__content" style="padding:4vw;">
+
+            <div class="mdl-grid">
+
+                <div class="mdl-cell mdl-cell--5-col">
+                    <canvas id="myChart" style="max-width:600px; max-height:360px;"></canvas>
+                </div>
+
+                <div class="mdl-cell mdl-cell--4-col">
+                    <div style="margin-top:56px;">
+                        <center>Current Heart Rate</center><br>
+                        <center><span id="heart-display" class="pulse">--</span></center>
+                        <center style="margin-top:16px;">BPM</center>
+                    </div>
+                </div>
+
+                <div class="mdl-cell mdl-cell--3-col">
+                    <ul style="margin-top:72px;">
+                        <li>Breathing Rate : <b id='breathing'>--</b></li>
+                        <li>Blood Pressure : <b id='blood'>Normal</b></li>
+                        <li>Tempreature : <b id='temp'>Normal</b></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div>
+
+                <div class="mdl-grid">
+
+                    <div class="mdl-cell mdl-cell--3-col" style="padding-top:2vw;">
+
+                        <ul>
+                            <li>Patient name : <b id='person-name'>--</b><br></li>
+                            <li>Patient age : <b id='person-age'>--</b><br></li>
+                            <li>Patient blood group : <b id='person-group'>--</b><br></li>
+                        </ul>
+
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--2-col" style="padding-top:2vw;">
+
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
+                                <input type="checkbox" id="switch-1" class="mdl-switch__input" onclick="motorBtn();">
+                                <span class="mdl-switch__label">Motor</span>
+                            </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
+                                <input type="checkbox" id="switch-2" class="mdl-switch__input" onclick="led1Btn();">
+                                <span class="mdl-switch__label">LED1</span>
+                            </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-3">
+                                <input type="checkbox" id="switch-3" class="mdl-switch__input" onclick="led2Btn();">
+                                <span class="mdl-switch__label">LED2</span>
+                            </label>
+
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--3-col" style="margin-left:42px">
+
+                        <center>
+                            <canvas style="border:1px solid rgba(0, 0, 0, 0.34);" id="canvas" height="200" width="300"></canvas><br> Heart rate and Breathing rate<br>
+                        </center>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--3-col" style="margin-left:64px">
+
+                        <center>
+                            <canvas style="border:1px solid rgba(0, 0, 0, 0.34);" id="regression" height="200" width="300"></canvas><br> Cholestrol - Regression<br>
+                        </center>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+<script>
+            var ctx = document.getElementById("myChart").getContext('2d');
+
+            var chart = new Chart(ctx, {
+                type: 'line',
+
+                data: {
+
+                    labels: ["-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0"],
+
+                    datasets: [{
+
+                        data: [],
+
+                        label: 'Heart Rate',
+
+                        backgroundColor: ['rgba(244, 67, 54, 0)'],
+
+                        borderColor: ['rgba(244,67,54,1)', 'rgba(33,150,243,1)'],
+
+                        borderWidth: 1
+
+                    }, {
+
+                        data: [],
+
+                        label: 'Breathing Rate',
+
+                        backgroundColor: ['rgba(244, 67, 54, 0)'],
+
+                        borderColor: ['rgba(33,150,243,1)'],
+
+                        borderWidth: 1
+
+                    }]
+                },
+
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: false
+                            }
+                        }]
+                    }
+                }
+
+
+
+            });
+
+            var personid = (new URL(window.location.href)).searchParams.get('q');
+
+            function addData(data) {
+                if (chart.data.datasets[0].data.length >= 10) removeData();
+                chart.data.datasets[0].data.push(data);
+                chart.update(0);
+            }
+
+            function removeData() {
+                //console.log('removecalled');
+                chart.data.datasets[0].data.shift();
+                chart.update(0);
+            }
+
+            function addData1(data) {
+                if (chart.data.datasets[1].data.length >= 10) removeData1();
+                chart.data.datasets[1].data.push(data);
+                chart.update(0);
+            }
+
+            function removeData1() {
+                //console.log('removecalled');
+                chart.data.datasets[1].data.shift();
+                chart.update(0);
+            }
+
+
+            firebase.database().ref('/' + personid + '/details/').on('value', function (snapshot) {
+                document.getElementById('person-name').innerHTML = snapshot.val()['name'];
+                document.getElementById('person-age').innerHTML = snapshot.val()['age'];
+                document.getElementById('person-group').innerHTML = snapshot.val()['blood'];
+            })
+
+            firebase.database().ref('/' + personid + '/sensors/heart').on('value', function (snapshot) {
+                document.getElementById('heart-display').innerHTML = snapshot.val();
+                addData(parseInt(snapshot.val()));
+                var heartRate = parseInt(snapshot.val());
+                //document.getElementById('breathing').innerHTML = Math.round(heartRate/4) + ' /min';
+                //document.getElementById('breathing').innerHTML += (heartRate/4 < 12 || heartRate/4 >20)?' (Abnormal)':' (Normal)';
+
+                //data.push([heartRate,heartRate]);
+
+                var a = [heartRate, heartRate + (Math.round(Math.random() * 75)) - 37]
+                mlAdd(a);
+                //console.log(a);
+
+                setup();
+
+                if (heartRate > 100 || heartRate < 60) {
+                    var data = {
+                        message: 'Patient heart rate critical',
+                        actionText: 'OK'
+                    };
+                    document.getElementById('demo-snackbar-example').MaterialSnackbar.showSnackbar(data);
+                    navigator.vibrate(2000);
+                }
+            });
+
+            firebase.database().ref('/' + personid + '/sensors/breath').on('value', function (snapshot) {
+                document.getElementById('breathing').innerHTML = snapshot.val();
+                addData1(parseInt(snapshot.val()));
+                var breathRate = parseInt(snapshot.val());
+                //document.getElementById('breathing').innerHTML = Math.round(heartRate/4) + ' /min';
+                //document.getElementById('breathing').innerHTML += (heartRate/4 < 12 || heartRate/4 >20)?' (Abnormal)':' (Normal)';
+
+                //data.push([heartRate,heartRate]);
+
+                //var a = [heartRate,heartRate + (Math.round(Math.random() * 75)) - 37]
+                //mlAdd(a);
+                //console.log(a);
+
+                //setup();
+
+                if (breathRate > 100 || breathRate < 60) {
+                    var data = {
+                        message: 'Patient breath rate critical',
+                        actionText: 'OK'
+                    };
+                    document.getElementById('demo-snackbar-example').MaterialSnackbar.showSnackbar(data);
+                    navigator.vibrate(2000);
+                }
+            });
+
+
+            firebase.database().ref('/' + personid + '/sensors/dip1').on('value', function (snapshot) {
+                if (snapshot.val() == 'on') {
+                    document.getElementById('blood').innerHTML = "Abnormal";
+                    var data = {
+                        message: 'Patient blood pressure critical',
+                        actionText: 'OK'
+                    };
+                    document.getElementById('demo-snackbar-example').MaterialSnackbar.showSnackbar(data);
+                    navigator.vibrate(200);
+                } else {
+                    document.getElementById('blood').innerHTML = "Normal";
+                }
+            });
+
+            firebase.database().ref('/' + personid + '/sensors/dip2').on('value', function (snapshot) {
+                if (snapshot.val() == 'on') {
+                    document.getElementById('temp').innerHTML = "Abnormal";
+                    var data = {
+                        message: 'Patient temperature critical',
+                        actionText: 'OK'
+                    };
+                    document.getElementById('demo-snackbar-example').MaterialSnackbar.showSnackbar(data);
+                    navigator.vibrate(200);
+                } else {
+                    document.getElementById('temp').innerHTML = "Normal";
+                }
+            });
+
+            firebase.database().ref('/' + personid + '/devices/').on('value', function (snapshot) {
+                if (snapshot.val()['motor'] == "on")
+                    document.getElementById('switch-1').parentElement.classList.add('is-checked');
+                else
+                    document.getElementById('switch-1').parentElement.classList.remove('is-checked');
+                    
+                if (snapshot.val()['led1'] == "on")
+                    document.getElementById('switch-2').parentElement.classList.add('is-checked');
+                else
+                    document.getElementById('switch-2').parentElement.classList.remove('is-checked');
+                    
+                if (snapshot.val()['led2'] == "on")
+                    document.getElementById('switch-3').parentElement.classList.add('is-checked');
+                else
+                    document.getElementById('switch-3').parentElement.classList.remove('is-checked');
+            })
+
+            firebase.database().ref('/' + personid + '/cholesterol/').once('value').then(function (snapshot) {
+                yogi = [];
+                for (var i in snapshot.val()) {
+                    console.log(i, snapshot.val()[i]);
+                    if ((snapshot.val()).hasOwnProperty(i))
+                        yogi.push(snapshot.val()[i]);
+                }
+                console.log('processed');
+                console.log(yogi);
+                process();
+                regSetup();
+            });
+
+            function motorBtn() {
+                if (!document.getElementById('switch-1').parentElement.classList.contains('is-checked')) {
+                    firebase.database().ref('/' + personid + '/devices/motor/').set("on");
+                }
+                else {
+                    firebase.database().ref('/' + personid + '/devices/motor/').set("off");
+                }
+            }
+
+            function led1Btn() {
+                if (!document.getElementById('switch-2').parentElement.classList.contains('is-checked')) {
+                    firebase.database().ref('/' + personid + '/devices/led1/').set("on");
+                }
+                else {
+                    firebase.database().ref('/' + personid + '/devices/led1/').set("off");
+                }
+            }
+
+            function led2Btn() {
+                if (!document.getElementById('switch-3').parentElement.classList.contains('is-checked')) {
+                    firebase.database().ref('/' + personid + '/devices/led2/').set("on");
+                }
+                else {
+                    firebase.database().ref('/' + personid + '/devices/led2/').set("off");
+                }
+            }
+</script>
+
+<script src="ml.js"></script>
+<script src="regression.js"></script>
+
+</html>
